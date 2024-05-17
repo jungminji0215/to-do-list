@@ -6,23 +6,55 @@ addButton.addEventListener("click", addTask);
 let taskList = [];
 
 function addTask() {
-  taskList.push(taskInput.value);
+  let task = {
+    id: generateRandomId(),
+    taskContent: taskInput.value,
+    isComplete: false,
+  };
 
-  console.log(taskList);
+  taskList.push(task);
+
+  console.log(task);
   render();
 }
 
 function render() {
   let resultHTML = "";
   for (let i = 0; i < taskList.length; i++) {
-    resultHTML += `
-    <div class="task">
-      <div>${taskList[i]}</div>
-      <div>
-        <button>Check</button>
-        <button>Delete</button>
-      </div>
-  </div>`;
+    if (taskList[i].isComplete) {
+      resultHTML += `
+      <div class="task task-done-area">
+        <div class="task-done">${taskList[i].taskContent}</div>
+        <div>
+          <i class="fa-solid fa-arrow-rotate-left" style="color: #aaadb1;" onclick="completeToggle('${taskList[i].id}')"></i>
+          <i class="fa-solid fa-trash-can" style="color: #e60f19;"></i>
+        </div>
+    </div>`;
+    } else {
+      resultHTML += `
+      <div class="task">
+        <div>${taskList[i].taskContent}</div>
+        <div>
+          <i class="fa-solid fa-check" style="color: #63E6BE;" onclick="completeToggle('${taskList[i].id}')"></i>
+          <i class="fa-solid fa-trash-can" style="color: #e60f19;"></i>
+        </div>
+    </div>`;
+    }
   }
   document.getElementById("task-board").innerHTML = resultHTML;
+}
+
+function generateRandomId() {
+  return Math.random().toString(36).substr(2, 16);
+}
+
+function completeToggle(id) {
+  for (let i = 0; i < taskList.length; i++) {
+    if (taskList[i].id == id) {
+      taskList[i].isComplete = !taskList[i].isComplete;
+      break;
+    }
+  }
+
+  render();
 }
